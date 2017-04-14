@@ -1,16 +1,18 @@
 {
-  "name": "node_exposed_shell",
+  "name": "BrowserBash",
   "version": "1.0.0",
-  "description": "",
+  "description": "Realtime Collaborative Terminal",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "osk2",
+  "license": "MIT",
   "dependencies": {
+    "ansi-html": "0.0.7",
     "express": "^4.14.1",
+    "pty.js": "^0.3.1",
     "socket.io": "^1.7.2",
     "socket.io-client": "^1.7.2"
   }
