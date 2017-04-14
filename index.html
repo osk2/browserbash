@@ -1,53 +1,20 @@
 <!doctype html>
 <html>
   <head>
-    <style>
-      html, body, .console, .chat {
-        height: 100%;
-      }
-      body, p, .command {
-        background-color: #000;
-        font-family: monaco, "Courier New", Courier, monospace;
-        font-size: 16px;
-        border: none;
-        color: #fff;
-      }
-
-      .console {
-        width: 85%;
-        padding: 1em;
-        box-sizing: border-box;
-        float: left;
-      }
-
-      .output {
-        white-space: pre;
-      }
-
-      .output, .input, .command {
-        margin:0;
-        padding:0;
-      }
-
-      .command:focus {
-        outline: none;
-        border: none;
-      }
-
-      .console .output:last-of-type, form {
-        display: inline-block;
-      }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
   </head>
 
   <body>
     <div class="console">
       <span class="input">&gt; <input class="command"></span>
     </div>
-
+    <div class="chat">
+      
+    </div>
+    <div style="clear: both;"></div>
     <script src="//cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js" integrity="sha256-WKvqiY0jZHWQZIohYEmr9KUC5rEaYEOFTq+ByllJK8w=" crossorigin="anonymous"></script>
-    <script src="ansi_up.js"></script>
+    <script src="js/ansi_up.js"></script>
     <script>
       var socket = io(document.location.origin);
       var ansi_up = new AnsiUp;

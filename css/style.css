@@ -1,0 +1,43 @@
+html, body, .console, .chat {
+  height: 100%;
+}
+
+body, p, .command {
+  background-color: #000;
+  font-family: monaco, "Courier New", Courier, monospace;
+  font-size: 16px;
+  border: none;
+  color: #fff;
+}
+
+.console {
+  width: 85%;
+  padding: 1em;
+  box-sizing: border-box;
+  float: left;
+}
+
+.chat {
+  width: 15%;
+  float: left;
+  box-sizing: border-box;
+  border-left: 1px #ccc solid;
+}
+
+.output {
+  white-space: pre;
+}
+
+.output, .input, .command {
+  margin:0;
+  padding:0;
+}
+
+.command:focus {
+  outline: none;
+  border: none;
+}
+
+.console .output:last-of-type, form {
+  display: inline-block;
+}
