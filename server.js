@@ -5,7 +5,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const term = pty.spawn('bash', [], {
   name: 'xterm-color',
-  cols: 100,
+  cols: 80,
   rows: 40,
   cwd: process.env.HOME,
   env: process.env
@@ -33,6 +33,10 @@ io.on('connection', function (client) {
       term.write('clear\r');
       return;
     }
+    if (/^exit|logout|login$/.test(data)) {
+      io.emit('message', 'Shut up, you idiot');
+      return;
+    }
     term.write(data + '\r');
   });
 
@@ -42,6 +46,11 @@ io.on('connection', function (client) {
 
   client.on('kill', function () {
     term.kill('SIGINT');
+  });
+
+  client.on('chat', function (data) {
+    data.id = client.id;
+    io.emit('chat', data);
   });
 });
 

@@ -2,7 +2,7 @@ html, body, .console, .chat {
   height: 100%;
 }
 
-body, p, .command {
+body, p, input {
   background-color: #000;
   font-family: monaco, "Courier New", Courier, monospace;
   font-size: 16px;
@@ -22,18 +22,62 @@ body, p, .command {
   float: left;
   box-sizing: border-box;
   border-left: 1px #ccc solid;
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+
+.chat .name {
+  cursor: pointer;
+}
+
+.chat .user {
+  padding: .5em;
+  box-sizing: border-box;
+  border-bottom: 1px #ccc solid;
+}
+
+.chat .user .online {
+  background: #42b72a;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.chat .input {
+  padding: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-top: 1px #ccc solid;
+}
+
+.chat .message {
+  height: calc(100% - 80px);
+  padding: 3px;
+  overflow-y: scroll;
+}
+
+.chat .message .mine {
+  text-align: right;
+  color: #999;
+}
+
+.chat .message .others {
+  text-align: left;
 }
 
 .output {
   white-space: pre;
 }
 
-.output, .input, .command {
+.output, .input, input {
   margin:0;
   padding:0;
 }
 
-.command:focus {
+input:focus {
   outline: none;
   border: none;
 }

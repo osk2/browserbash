@@ -1,27 +1,36 @@
 <!doctype html>
 <html>
   <head>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
   </head>
 
   <body>
     <div class="console">
-      <span class="input">&gt; <input class="command"></span>
+      <span class="input">&gt; <input class="command" tabindex="1"></span>
     </div>
     <div class="chat">
-      
+      <div class="user">
+        <span class="online"></span>
+        <span class="name">你的名字</span>
+      </div>
+      <div class="message"></div>
+      <div class="input">
+        <input placeholder="輸入你的代稱" tabindex="2">
+      </div>
     </div>
     <div style="clear: both;"></div>
     <script src="//cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js" integrity="sha256-WKvqiY0jZHWQZIohYEmr9KUC5rEaYEOFTq+ByllJK8w=" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js" integrity="sha256-IyWBFJYclFY8Pn32bwWdSHmV4B9M5mby5bhPHEmeY8w=" crossorigin="anonymous"></script>
     <script src="js/ansi_up.js"></script>
     <script>
       var socket = io(document.location.origin);
-      var ansi_up = new AnsiUp;
+      var userId = '';
 
       var appendCursor = function () {
-        $('.input').remove();
-        $('.console').append('<span class="input"><input class="command"></span>');
+        $('.console .input').remove();
+        $('.console').append('<span class="input"><input class="command" tabindex="1"></span>');
         $('.command').focus();
         $('form').one('submit', function (e) {
           var input = $('.command');
@@ -32,13 +41,14 @@
       }
 
       var add_content = function (bashOutput) {
+        var ansi_up = new AnsiUp;
         var html = ansi_up.ansi_to_html(bashOutput);
 
         $('.console').append('<span class="output">' + html + '</span>');
         $('html, body').animate({scrollTop: $(document).height()}, 0);
       }
 
-      socket.on('connect',function () {
+      socket.on('connect', function () {
         console.log('Connected to the server!');
       });
 
@@ -49,18 +59,36 @@
       socket.on('message', function (data) {
         add_content(data);
         appendCursor();
-        $('input').val('');
+        $('.command').val('');
       });
 
       socket.on('typing', function (data) {
         if (data.id !== socket.id) {
-          $('input').val(data.val);
+          $('.command').val(data.val);
         }
       });
 
       socket.on('clear', function () {
-        $('.console .output').not(':last').remove();
-        $('input').focus();
+        $('.console .output').slice(0, -1).remove();
+        $('.command').focus();
+      });
+
+      socket.on('chat', function (data) {
+        var message = '';
+        var className = '';
+
+        if (data.id === socket.id) {
+          className = ' mine';
+        } else {
+          className = ' others';
+        }
+
+        if (data.user) {
+          message = '<div title="' + data.user + '" class="tooltip' + className + '">' + data.message + '</div>';
+        } else {
+          message = '<div class="tooltip' + className + '">' + data.message + '</div>';
+        }
+        $('.chat .message').append(message).scrollTop($('.chat .message')[0].scrollHeight);
       });
 
       $('.console').on('input', '.command', function () {
@@ -68,16 +96,25 @@
         socket.emit('typing', {val: val, id: socket.id});
       });
 
-      $('body').on('click', function () {
+      $('.console').on('click', function () {
         $('.command').focus();
       });
 
       $('.command').focus();
 
+      $('.chat .name').on('click', function () {
+        var name = prompt('你的名字');
+        if (name === null || name === '') {
+          return;
+        }
+        userId = name;
+        $(this).text(name);
+      });
+
       $('.console').on('keydown', '.command', function (e) {
         if (e.keyCode === 13) {
           // Enter
-          var input = $('input');
+          var input = $('.command');
           socket.send(input.val());
           input.val(''); 
         }
@@ -92,6 +129,45 @@
         if (e.keyCode === 67 && e.ctrlKey) {
           // Ctrl + C
           socket.emit('kill');
+        }
+      });
+
+      $('.chat input').on('keydown', function (e) {
+        var $this = $(this);
+        var message = $this.val();
+        var placeholders = [
+          '我來抱怨幾句',
+          '太雷了吧',
+          '根本不知道他在幹嘛',
+          '這我還比較會',
+          '畢業證書是買來的吧',
+          '天都要亮了',
+          '可以睡覺了嗎'
+        ];
+
+        placeholders = _.shuffle(placeholders);
+        if (e.keyCode === 13) {
+          if (userId === '') {
+            if (!message) {
+              return;
+            }
+            userId = message;
+            $('.chat .name').text(message);
+            $this.val('');
+            message = undefined;
+          }
+
+          var newString = placeholders[0];
+          var oldString = $this.attr('placeholder');
+
+          if (oldString === newString) {
+            newString = placeholders[1];
+          }
+          $this.attr('placeholder', newString);
+          if (message) {
+            socket.emit('chat', {user: userId, message: message});
+          }
+          $this.val('');
         }
       });
     </script>
