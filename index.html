@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      html, body, .console, .chat {
+        height: 100%;
+      }
+      body, p, .command {
+        background-color: #000;
+        font-family: monaco, "Courier New", Courier, monospace;
+        font-size: 16px;
+        border: none;
+        color: #fff;
+      }
+
+      .console {
+        width: 85%;
+        padding: 1em;
+        box-sizing: border-box;
+        float: left;
+      }
+
+      .output {
+        white-space: pre;
+      }
+
+      .output, .input, .command {
+        margin:0;
+        padding:0;
+      }
+
+      .command:focus {
+        outline: none;
+        border: none;
+      }
+
+      .console .output:last-of-type, form {
+        display: inline-block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="console">
+      <span class="input">&gt; <input class="command"></span>
+    </div>
+
+    <script src="//cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js" integrity="sha256-WKvqiY0jZHWQZIohYEmr9KUC5rEaYEOFTq+ByllJK8w=" crossorigin="anonymous"></script>
+    <script src="ansi_up.js"></script>
+    <script>
+      var socket = io(document.location.origin);
+      var ansi_up = new AnsiUp;
+
+      var appendCursor = function () {
+        $('.input').remove();
+        $('.console').append('<span class="input"><input class="command"></span>');
+        $('.command').focus();
+        $('form').one('submit', function (e) {
+          var input = $('.command');
+          socket.send(input.val());
+          input.val(''); 
+          e.preventDefault();
+        });
+      }
+
+      var add_content = function (bashOutput) {
+        var html = ansi_up.ansi_to_html(bashOutput);
+
+        $('.console').append('<span class="output">' + html + '</span>');
+        $('html, body').animate({scrollTop: $(document).height()}, 0);
+      }
+
+      socket.on('connect',function () {
+        console.log('Connected to the server!');
+      });
+
+      socket.on('exit', function (data) {
+        add_content(data);
+      });
+
+      socket.on('message', function (data) {
+        add_content(data);
+        appendCursor();
+        $('input').val('');
+      });
+
+      socket.on('typing', function (data) {
+        if (data.id !== socket.id) {
+          $('input').val(data.val);
+        }
+      });
+
+      socket.on('clear', function () {
+        $('.console .output').not(':last').remove();
+        $('input').focus();
+      });
+
+      $('.console').on('input', '.command', function () {
+        var val = $(this).val();
+        socket.emit('typing', {val: val, id: socket.id});
+      });
+
+      $('body').on('click', function () {
+        $('.command').focus();
+      });
+
+      $('.command').focus();
+
+      $('.console').on('keydown', '.command', function (e) {
+        if (e.keyCode === 13) {
+          // Enter
+          var input = $('input');
+          socket.send(input.val());
+          input.val(''); 
+        }
+
+        if (e.keyCode === 9) {
+          // Tab
+          var input = $('.command').val();
+          socket.send(input + '\t');
+          e.preventDefault();
+        }
+
+        if (e.keyCode === 67 && e.ctrlKey) {
+          // Ctrl + C
+          socket.emit('kill');
+        }
+      });
+    </script>
+  </body>
+</html>
