@@ -35,3 +35,8 @@ Some commands are banned due to security issue
 - `exit`
 - `sudo`
 - `su`
+
+
+## License
+
+This project is licensed under MIT, see [LICENSE](LICENSE) for detail
