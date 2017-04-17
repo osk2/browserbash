@@ -8,7 +8,7 @@ Clone the repo first
 git clone https://github.com/osk2/browserbash
 ```
 
-make sure you have Node.js installed, and
+Make sure you have Node.js installed, and
 
 ```
 npm install
