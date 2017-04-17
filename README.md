@@ -1,5 +1,7 @@
 # BrowserBash
+
 Realtime collaborative terminal with chat enabled.
+![Preview](https://raw.githubusercontent.com/osk2/browserbash/master/img/preview.png)
 
 ## Installation
 
