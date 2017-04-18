@@ -1,7 +1,8 @@
 # BrowserBash
 
 Realtime collaborative terminal with chat enabled.
-![Preview](browserbash/img/preview.png)
+
+![Preview](img/preview.png)
 
 ## Installation
 
