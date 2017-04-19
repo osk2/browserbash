@@ -23,7 +23,7 @@ npm install
 node .
 ```
 
-Server will start listening on port 8080
+Server will start listening on port 5566
 
 ## Note
 

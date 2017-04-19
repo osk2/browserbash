@@ -3,6 +3,8 @@ const app = express();
 const pty = require('pty.js');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
+const basicAuth = require('express-basic-auth');
+const config = require('./config.js');
 const term = pty.spawn('bash', [], {
   name: 'xterm-color',
   cols: 80,
@@ -12,6 +14,10 @@ const term = pty.spawn('bash', [], {
 });
 
 app.use(express.static('./'));
+
+app.use(basicAuth({
+  users: { config.basicAuthUser: config.basicAuthPwd }
+}))
 
 term.on('data', function(data) {
   io.emit('message', data);
@@ -54,6 +60,6 @@ io.on('connection', function (client) {
   });
 });
 
-server.listen(5566, function () {
-  console.log('App listening on port 5566');
+server.listen(config.port, function () {
+  console.log('App listening on port ' + config.port);
 });
