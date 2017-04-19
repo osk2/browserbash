@@ -54,6 +54,6 @@ io.on('connection', function (client) {
   });
 });
 
-server.listen(8080, function () {
-  console.log('App listening on port 8080');
+server.listen(5566, function () {
+  console.log('App listening on port 5566');
 });
