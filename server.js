@@ -12,11 +12,13 @@ const term = pty.spawn('bash', [], {
   cwd: process.env.HOME,
   env: process.env
 });
+const basicAuthInfo = {};
+basicAuthInfo[config.basicAuthUser] = config.basicAuthPwd;
 
 app.use(express.static('./'));
 
 app.use(basicAuth({
-  users: { config.basicAuthUser: config.basicAuthPwd }
+  users: basicAuthInfo
 }))
 
 term.on('data', function(data) {
