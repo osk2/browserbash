@@ -1,5 +1,7 @@
 # BrowserBash
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/osk2/browserbash.svg)](https://greenkeeper.io/)
+
 Realtime collaborative terminal with chat enabled.
 
 ![Preview](img/preview.png)
