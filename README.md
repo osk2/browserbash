@@ -4,12 +4,13 @@ Realtime collaborative terminal with chat enabled.
 
 ![Preview](img/preview.png)
 
+## Features
 
-This fork added following features
+> This project is forked from [melvinroest/browserbash](https://github.com/melvinroest/browserbash), differences are shown below
 
 - Converted ANSI to HTML that can display ANSI colors correctly
 - Sync input to every clients, clients can see what others are typing
-- Enable chat
+- Realtime chat
 - Banned some keyword due to security reason
 - Use basic auth
 - `clear` can actually clear screen
